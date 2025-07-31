@@ -1,0 +1,30 @@
+
+
+@URL = https://2dqfj1u70e.execute-api.eu-north-1.amazonaws.com/
+
+### Get a user
+GET {{URL}}users/1
+
+### Create a user
+POST {{URL}}/users
+Content-Type: application/json
+
+{
+    'name': 'John Doe',
+    'email': 'john.doe@example.com'
+}
+
+#### Get all users
+GET {{URL}}/users
+
+### Update a user
+PUT {{URL}}/users/1
+Content-Type: application/json
+
+{
+    'name': 'Jane Doe',
+    'email': 'jane.doe@example.com'
+}
+
+### Delete a user
+DELETE  {{URL}}/users/1

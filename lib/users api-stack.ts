@@ -5,7 +5,6 @@ import { Runtime } from "aws-cdk-lib/aws-lambda";
 import path from "path";
 import * as apigateway from "aws-cdk-lib/aws-apigatewayv2";
 import * as apigateway_intergratons from "aws-cdk-lib/aws-apigatewayv2-integrations";
-import { handler } from "../src/lambda/handler";
 
 export class UsersApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -48,7 +47,7 @@ export class UsersApiStack extends cdk.Stack {
         name: "UpdateUser",
       },
       {
-        path: "/users{id}",
+        path: "/users/{id}",
         method: apigateway.HttpMethod.DELETE,
         name: "DeleteUser",
       },
@@ -58,7 +57,7 @@ export class UsersApiStack extends cdk.Stack {
         path,
         methods: [method],
         integration: new apigateway_intergratons.HttpLambdaIntegration(
-          `${name}Intergration`,
+          `${name}Integration`,
           userHandler
         ),
       });
