@@ -17,5 +17,56 @@ export class UsersApiStack extends cdk.Stack {
       handler: "handler",
       functionName: `${this.stackName}user-handler`,
     });
+    const httpApi = new apigateway.HttpApi(this, "UsersApi", {
+      apiName: "Users API",
+      description: "Users management API",
+      corsPreflight: {
+        allowOrigins: ["*"],
+        allowMethods: [apigateway.CorsHttpMethod.ANY],
+        allowHeaders: ["*"],
+      },
+    });
+    const routes = [
+      {
+        path: "/users",
+        method: apigateway.HttpMethod.GET,
+        name: "GetAllUsers",
+      },
+      {
+        path: "/users",
+        method: apigateway.HttpMethod.POST,
+        name: "CreateUser",
+      },
+      {
+        path: "/users/{id}",
+        method: apigateway.HttpMethod.GET,
+        name: "GetUser",
+      },
+      {
+        path: "/users/{id}",
+        method: apigateway.HttpMethod.PUT,
+        name: "UpdateUser",
+      },
+      {
+        path: "/users{id}",
+        method: apigateway.HttpMethod.DELETE,
+        name: "DeleteUser",
+      },
+    ];
+    routes.forEach(({ path, method, name }) => {
+      httpApi.addRoutes({
+        path,
+        methods: [method],
+        integration: new apigateway_intergratons.HttpLambdaIntegration(
+          `${name}Intergration`,
+          userHandler
+        ),
+      });
+    });
+
+    new cdk.CfnOutput(this, "HttpApiUrl", {
+      value: httpApi.url!,
+      description: "HTTP API URL",
+    });
   }
 }
