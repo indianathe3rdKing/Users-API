@@ -24,6 +24,7 @@ export class UsersApiStack extends cdk.Stack {
         TABLE_NAME: props.dynamodbStack.usersTable.tableName,
       },
     });
+    props.dynamodbStack.usersTable.grantReadWriteData(userHandler);
     const httpApi = new apigateway.HttpApi(this, "UsersApi", {
       apiName: "Users API",
       description: "Users management API",

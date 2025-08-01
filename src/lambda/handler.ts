@@ -40,7 +40,7 @@ export const handler = async (
       }
     }
     if (path.startsWith("/users/")) {
-      const userId = path.split("/")[1];
+      const userId = path.split("/")[2];
       if (!userId) {
         return {
           statusCode: 400,
@@ -68,7 +68,7 @@ export const handler = async (
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Internal server error",
+        message: `Error while processing request: ${error}`,
       }),
     };
   }
@@ -93,19 +93,19 @@ async function createUser(
   const { name, email } = JSON.parse(event.body!);
   const userId = uuidv4();
 
-  // const user = {
-  //   id: userId,
-  //   name,
-  //   email,
-  //   createdAt: new Date().toISOString(),
-  // };
-
   const user = {
     id: userId,
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
+    name,
+    email,
     createdAt: new Date().toISOString(),
   };
+
+  // const user = {
+  //   id: userId,
+  //   name: faker.person.fullName(),
+  //   email: faker.internet.email(),
+  //   createdAt: new Date().toISOString(),
+  // };
 
   await dynamoDB.send(
     new PutCommand({
