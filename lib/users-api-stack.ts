@@ -29,7 +29,7 @@ export class UsersApiStack extends cdk.Stack {
       apiName: "Users API",
       description: "Users management API",
       corsPreflight: {
-        allowOrigins: ["*"],
+        allowOrigins: ["https://nextjs-frontend-app-wine.vercel.app"],
         allowMethods: [apigateway.CorsHttpMethod.ANY],
         allowHeaders: ["*"],
       },
