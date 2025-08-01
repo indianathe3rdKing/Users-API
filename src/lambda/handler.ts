@@ -1,9 +1,24 @@
 import { ApiGateway } from "aws-cdk-lib/aws-events-targets";
-import { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+  UpdateCommand,
+  DeleteCommand,
+  ScanCommand,
+} from "@aws-sdk/lib-dynamodb";
+import { v4 as uuidv4 } from "uuid";
+import { faker } from "@faker-js/faker";
+
+const client = new DynamoDBClient({});
+const dynamoDB = DynamoDBDocumentClient.from(client);
+const TABLE_NAME = process.env.TABLE_NAME || "";
 
 export const handler = async (
   event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResult> => {
+): Promise<APIGatewayProxyResultV2> => {
   const method = event.requestContext.http.method;
   const path = event.requestContext.http.path;
 
@@ -60,7 +75,7 @@ export const handler = async (
 
 async function getAllUsers(
   event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResult> {
+): Promise<APIGatewayProxyResultV2> {
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -70,7 +85,7 @@ async function getAllUsers(
 }
 async function createUser(
   event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResult> {
+): Promise<APIGatewayProxyResultV2> {
   return {
     statusCode: 201,
     body: JSON.stringify({
@@ -78,7 +93,7 @@ async function createUser(
     }),
   };
 }
-async function getUser(userId: string): Promise<APIGatewayProxyResult> {
+async function getUser(userId: string): Promise<APIGatewayProxyResultV2> {
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -89,7 +104,7 @@ async function getUser(userId: string): Promise<APIGatewayProxyResult> {
 async function updateUser(
   userId: string,
   event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResult> {
+): Promise<APIGatewayProxyResultV2> {
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -97,7 +112,7 @@ async function updateUser(
     }),
   };
 }
-async function deleteUser(userId: string): Promise<APIGatewayProxyResult> {
+async function deleteUser(userId: string): Promise<APIGatewayProxyResultV2> {
   return {
     statusCode: 200,
     body: JSON.stringify({
