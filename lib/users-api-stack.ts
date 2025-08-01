@@ -8,11 +8,11 @@ import * as apigateway_intergratons from "aws-cdk-lib/aws-apigatewayv2-integrati
 import { DynamoDBStack } from "./dynamodb-stack";
 
 interface UsersApiStackProps extends cdk.StackProps {
-  dyamodbStack: DynamoDBStack;
+  dynamodbStack: DynamoDBStack;
 }
 
 export class UsersApiStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: UsersApiStackProps) {
     super(scope, id, props);
 
     const userHandler = new NodejsFunction(this, "UserHandler", {
@@ -20,6 +20,9 @@ export class UsersApiStack extends cdk.Stack {
       entry: path.join(__dirname, "../src/lambda/handler.ts"),
       handler: "handler",
       functionName: `${this.stackName}user-handler`,
+      environment: {
+        TABLE_NAME: props.dynamodbStack.usersTable.tableName,
+      },
     });
     const httpApi = new apigateway.HttpApi(this, "UsersApi", {
       apiName: "Users API",
