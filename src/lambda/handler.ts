@@ -143,11 +143,28 @@ async function updateUser(
   userId: string,
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> {
+  const { name, email } = JSON.parse(event.body!);
+
+  const result = await dynamoDB.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { id: userId },
+      UpdateExpression: "SET #name = :name, #email = :email",
+      ExpressionAttributeNames: {
+        "#name": "name",
+        "#email": "email",
+      },
+      ExpressionAttributeValues: {
+        ":name": name,
+        ":email": email,
+      },
+      ReturnValues: "ALL_NEW",
+    })
+  );
+
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: "update user  ",
-    }),
+    body: JSON.stringify(result.Attributes),
   };
 }
 async function deleteUser(userId: string): Promise<APIGatewayProxyResultV2> {
