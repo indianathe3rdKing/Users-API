@@ -76,21 +76,45 @@ export const handler = async (
 async function getAllUsers(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> {
+  // const result = await dynamoDB.send(
+  //   new ScanCommand({
+  //     TableName: TABLE_NAME
+  //   })
+  // )
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: "fetch all users",
-    }),
+    // body: JSON.stringify(result.Items || []),
   };
 }
 async function createUser(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> {
+  const { name, email } = JSON.parse(event.body!);
+  const userId = uuidv4();
+
+  // const user = {
+  //   id: userId,
+  //   name,
+  //   email,
+  //   createdAt: new Date().toISOString(),
+  // };
+
+  const user = {
+    id: userId,
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    createdAt: new Date().toISOString(),
+  };
+
+  await dynamoDB.send(
+    new PutCommand({
+      TableName: TABLE_NAME,
+      Item: user,
+    })
+  );
   return {
     statusCode: 201,
-    body: JSON.stringify({
-      message: "Create a new user",
-    }),
+    body: JSON.stringify(user),
   };
 }
 async function getUser(userId: string): Promise<APIGatewayProxyResultV2> {
