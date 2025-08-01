@@ -11,6 +11,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import { faker } from "@faker-js/faker";
+import { Key } from "aws-cdk-lib/aws-kms";
 
 const client = new DynamoDBClient({});
 const dynamoDB = DynamoDBDocumentClient.from(client);
@@ -150,6 +151,12 @@ async function updateUser(
   };
 }
 async function deleteUser(userId: string): Promise<APIGatewayProxyResultV2> {
+  await dynamoDB.send(
+    new DeleteCommand({
+      TableName: TABLE_NAME,
+      Key: { id: userId },
+    })
+  );
   return {
     statusCode: 200,
     body: JSON.stringify({
