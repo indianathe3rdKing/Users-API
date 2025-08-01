@@ -118,11 +118,24 @@ async function createUser(
   };
 }
 async function getUser(userId: string): Promise<APIGatewayProxyResultV2> {
+  const result = await dynamoDB.send(
+    new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { id: userId },
+    })
+  );
+  if (!result.Item) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({
+        message: `User ${userId} not found`,
+      }),
+    };
+  }
+
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: "fetch user with id ",
-    }),
+    body: JSON.stringify(result.Item),
   };
 }
 async function updateUser(
