@@ -76,14 +76,14 @@ export const handler = async (
 async function getAllUsers(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> {
-  // const result = await dynamoDB.send(
-  //   new ScanCommand({
-  //     TableName: TABLE_NAME
-  //   })
-  // )
+  const result = await dynamoDB.send(
+    new ScanCommand({
+      TableName: TABLE_NAME,
+    })
+  );
   return {
     statusCode: 200,
-    // body: JSON.stringify(result.Items || []),
+    body: JSON.stringify(result.Items || []),
   };
 }
 async function createUser(
