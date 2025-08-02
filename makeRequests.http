@@ -1,6 +1,6 @@
 
 
-@URL = https://2dqfj1u70e.execute-api.eu-north-1.amazonaws.com
+@URL = {{$dotenv API_BASE_URL}}
 
 ### Get a user
 GET {{URL}}/users/c48c50b0-e958-43ce-95e5-e265dd20ce03
